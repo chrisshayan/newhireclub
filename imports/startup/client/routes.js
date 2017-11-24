@@ -3,7 +3,9 @@
  */
 import { FlowRouter } from 'meteor/kadira:flow-router';
 // import React from 'react';
-// import { mount } from 'react-mounter';
+import { mount } from 'react-mounter';
+
+import Main from '../../ui/pages/Main';
 
 
 const publicRoutes = FlowRouter.group({
@@ -13,6 +15,6 @@ const publicRoutes = FlowRouter.group({
 publicRoutes.route('/', {
   name: 'home',
   action() {
-    console.log('Welcome to New Hire Club');
+    mount(Main);
   },
 });
