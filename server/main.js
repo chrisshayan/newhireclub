@@ -8,8 +8,8 @@ import '../imports/startup/server/fixtures.js';
 // import '../imports/startup/server/reset-password-email.js';
 
 // Set up some rate limiting and other important security settings.
-//import '../imports/startup/server/security.js';
+// import '../imports/startup/server/security.js';
 
 // This defines all the collections, publications and methods that the application provides
 // as an API to the client.
-import '../imports/api/api.js';
+import '../imports/api';
