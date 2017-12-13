@@ -5,7 +5,7 @@ import '../common/navigation';
 import '../common/top-navbar';
 import '../common/footer';
 
-Template.mainLayout.onRendered = function () {
+Template.mainLayout.onRendered(() => {
   // Minimalize menu when screen is less than 768px
   $(window).bind('resize load', function () {
     if ($(this).width() < 769) {
@@ -56,4 +56,4 @@ Template.mainLayout.onRendered = function () {
   // BOXED LAYOUT
   // Uncomment this if you want to have boxed layout
   // $('body').addClass('boxed-layout');
-};
+});

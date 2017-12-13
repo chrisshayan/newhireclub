@@ -8,14 +8,20 @@ import {} from './triggers';
 /* Trackers */
 import './trackers';
 
-// Import to load these templates
+/**
+ * Templates
+ */
+// Layouts
 import '../../ui/layouts/main';
 import '../../ui/layouts/blank';
-
+// Errors
 import '../../ui/layouts/not-found';
-
-import '../../ui/pages/pageOne';
-import '../../ui/pages/pageTwo';
+// Pages
+// Landing Page
+import '../../ui/pages/landing/landing';
+// Register
+import '../../ui/pages/signup/signup';
+import '../../ui/pages/signin/signin';
 
 /* Redirect afterLogin */
 // Accounts.onLogin(() => {
@@ -55,20 +61,27 @@ FlowRouter.notFound = {
   },
 };
 
+/**
+ * Public Routes
+ */
+// Landing Page
 FlowRouter.route('/', {
-  action: () => {
-    FlowRouter.go('/pageOne');
+  name: 'home',
+  action() {
+    BlazeLayout.render('blankLayout', { content: 'landingPage' });
   },
 });
-
-FlowRouter.route('/pageOne', {
-  action: () => {
-    BlazeLayout.render('mainLayout', { content: 'pageOne' });
+// Sign up
+FlowRouter.route('/signup', {
+  name: 'signUp',
+  action() {
+    BlazeLayout.render('blankLayout', { content: 'signUp' });
   },
 });
-
-FlowRouter.route('/pageTwo', {
-  action: () => {
-    BlazeLayout.render('mainLayout', { content: 'pageTwo' });
+// Sign in
+FlowRouter.route('/signin', {
+  name: 'signIn',
+  action() {
+    BlazeLayout.render('blankLayout', { content: 'signIn' });
   },
 });

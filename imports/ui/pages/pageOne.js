@@ -3,3 +3,6 @@
  */
 import './pageOne.html';
 import '../common/page-heading';
+import demoTest from '/imports/api/collections/subdomains/functions';
+
+demoTest('hoan');
