@@ -58,6 +58,6 @@ Template.landingPage.onRendered(() => {
   // new WOW().init();
 });
 
-Template.landingPage.onDestroyed = function () {
+Template.landingPage.onDestroyed(() => {
   $('body').removeClass('landing-page');
-};
+});
