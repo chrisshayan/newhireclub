@@ -78,10 +78,34 @@ FlowRouter.route('/signup', {
     BlazeLayout.render('blankLayout', { content: 'signUp' });
   },
 });
+// Sign up with external services
+// Google Service
+FlowRouter.route('/signup-with-goole', {
+  name: 'signUpWithGoogle',
+  action() {
+    BlazeLayout.render('blankLayout', { content: 'signIn' });
+  },
+});
 // Sign in
 FlowRouter.route('/signin', {
   name: 'signIn',
   action() {
     BlazeLayout.render('blankLayout', { content: 'signIn' });
+  },
+});
+
+// Application Routes
+const appRoutes = FlowRouter.group({
+  prefix: '/app',
+  name: 'app',
+  triggersEnter: [function (context, redirect) {
+    console.log('running group triggers', context, redirect);
+  }],
+});
+
+appRoutes.route('/', {
+  name: 'app.home',
+  action() {
+    BlazeLayout.render('mainLayout', { content: 'pageOne' });
   },
 });

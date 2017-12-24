@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",
+    "bcrypt": "^1.0.3",
     "meteor-node-stubs": "^0.3.2",
     "validate.js": "^0.12.0",
     "wowjs": "^1.1.3"

@@ -4,6 +4,8 @@
 import { Template } from 'meteor/templating';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import validate from 'validate.js';
+import { Accounts } from 'meteor/accounts-base';
+import { FlowRouter } from 'meteor/kadira:flow-router';
 import './signup.html';
 
 // CONSTANTS
@@ -30,63 +32,72 @@ Template.signUp.onCreated(function signUpOnCreated() {
     submitButton: {
       message: '',
     },
+    signUpWithPassword: false,
   });
 });
 
 Template.signUp.events({
-  'keyup .username'(event, templateInstance) {
-    const username = event.target.value;
-    const validation = validate({ username }, { username: CONSTRAINTS.username });
-    const usernameBox = templateInstance.state.get('usernameBox');
-    if (validation) {
-      templateInstance.state.set('usernameBox', {
-        ...usernameBox,
-        class: BOX_STATUSES.warning,
-        message: validation.username ? validation.username.join() : 'Unexpected error.',
-      });
-    } else {
-      templateInstance.state.set('usernameBox', {
-        ...usernameBox,
-        class: BOX_STATUSES.success,
-        message: '',
-      });
+  'keypress/blur .username'(event, templateInstance) {
+    const signUpWithPassword = templateInstance.state.get('signUpWithPassword');
+    if (signUpWithPassword) {
+      const username = event.target.value;
+      const validation = validate({ username }, { username: CONSTRAINTS.username });
+      const usernameBox = templateInstance.state.get('usernameBox');
+      if (validation) {
+        templateInstance.state.set('usernameBox', {
+          ...usernameBox,
+          class: BOX_STATUSES.warning,
+          message: validation.username ? validation.username.join() : 'Unexpected error.',
+        });
+      } else {
+        templateInstance.state.set('usernameBox', {
+          ...usernameBox,
+          class: BOX_STATUSES.success,
+          message: '',
+        });
+      }
     }
   },
-  'keyup .email'(event, templateInstance) {
-    const email = event.target.value;
-    const validation = validate({ email }, { email: CONSTRAINTS.email });
-    const emailBox = templateInstance.state.get('emailBox');
-    if (validation) {
-      templateInstance.state.set('emailBox', {
-        ...emailBox,
-        class: BOX_STATUSES.warning,
-        message: validation.email ? validation.email.join() : 'Unexpected error.',
-      });
-    } else {
-      templateInstance.state.set('emailBox', {
-        ...emailBox,
-        class: BOX_STATUSES.success,
-        message: '',
-      });
+  'keypress/blur .email'(event, templateInstance) {
+    const signUpWithPassword = templateInstance.state.get('signUpWithPassword');
+    if (signUpWithPassword) {
+      const email = event.target.value;
+      const validation = validate({ email }, { email: CONSTRAINTS.email });
+      const emailBox = templateInstance.state.get('emailBox');
+      if (validation) {
+        templateInstance.state.set('emailBox', {
+          ...emailBox,
+          class: BOX_STATUSES.warning,
+          message: validation.email ? validation.email.join() : 'Unexpected error.',
+        });
+      } else {
+        templateInstance.state.set('emailBox', {
+          ...emailBox,
+          class: BOX_STATUSES.success,
+          message: '',
+        });
+      }
     }
   },
-  'keyup .password'(event, templateInstance) {
-    const password = event.target.value;
-    const validation = validate({ password }, { password: CONSTRAINTS.password });
-    const passwordBox = templateInstance.state.get('passwordBox');
-    console.log('password validation: ', validation);
-    if (validation) {
-      templateInstance.state.set('passwordBox', {
-        ...passwordBox,
-        class: BOX_STATUSES.warning,
-        message: validation.password ? validation.password.join() : 'Unexpected error.',
-      });
-    } else {
-      templateInstance.state.set('passwordBox', {
-        ...passwordBox,
-        class: BOX_STATUSES.success,
-        message: '',
-      });
+  'keypress/blur .password'(event, templateInstance) {
+    const signUpWithPassword = templateInstance.state.get('signUpWithPassword');
+    if (signUpWithPassword) {
+      const password = event.target.value;
+      const validation = validate({ password }, { password: CONSTRAINTS.password });
+      const passwordBox = templateInstance.state.get('passwordBox');
+      if (validation) {
+        templateInstance.state.set('passwordBox', {
+          ...passwordBox,
+          class: BOX_STATUSES.warning,
+          message: validation.password ? validation.password.join() : 'Unexpected error.',
+        });
+      } else {
+        templateInstance.state.set('passwordBox', {
+          ...passwordBox,
+          class: BOX_STATUSES.success,
+          message: '',
+        });
+      }
     }
   },
   'change .showPassword'(event, templateInstance) {
@@ -103,6 +114,52 @@ Template.signUp.events({
   'submit .sign-up'(event, templateInstance) {
     // Prevent default browser form submit
     event.preventDefault();
+
+    const userInfo = {
+      username: event.target.username.value,
+      email: event.target.email.value,
+      password: event.target.password.value,
+    };
+    // console.log('userInfo: ', userInfo);
+    const submitButton = templateInstance.state.get('submitButton');
+    const validation = validate(
+      { ...userInfo },
+      {
+        username: CONSTRAINTS.username,
+        email: CONSTRAINTS.email,
+        password: CONSTRAINTS.password,
+      },
+      { format: 'flat' },
+    );
+    // console.log('userInfo validation: ', validation);
+    if (validation) {
+      templateInstance.state.set('submitButton', {
+        ...submitButton,
+        class: BOX_STATUSES.warning,
+        message: validation ? validation.join() : 'Unexpected error.',
+      });
+    } else {
+      // Create user Accounts
+      Accounts.createUser({ ...userInfo }, (error) => {
+        if (error) {
+          templateInstance.state.set('submitButton', {
+            ...submitButton,
+            class: BOX_STATUSES.error,
+            message: error.reason ? error.reason : 'Unexpected error.',
+          });
+        } else {
+          FlowRouter.go('app.home');
+        }
+      });
+    }
+  },
+  'click .sign-up-with-google'(event, templateInstance) {
+    templateInstance.state.set('signUpWithPassword', false);
+    FlowRouter.go('signUpWithGoogle');
+  },
+  'click .sign-in'(event, templateInstance) {
+    templateInstance.state.set('signUpWithPassword', false);
+    FlowRouter.go('signIn');
   },
 });
 
