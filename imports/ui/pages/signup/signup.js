@@ -1,6 +1,7 @@
 /**
  * Created by tankhuu on 12/10/17.
  */
+import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import validate from 'validate.js';
@@ -33,6 +34,9 @@ Template.signUp.onCreated(function signUpOnCreated() {
       message: '',
     },
     signUpWithPassword: false,
+    signUpWithGoogleButton: {
+      message: '',
+    },
   });
 });
 
@@ -155,7 +159,20 @@ Template.signUp.events({
   },
   'click .sign-up-with-google'(event, templateInstance) {
     templateInstance.state.set('signUpWithPassword', false);
-    FlowRouter.go('signUpWithGoogle');
+    const signUpWithGoogleButton = templateInstance.state.get('signUpWithGoogleButton');
+    Meteor.loginWithGoogle({
+      requestPermissions: ['profile', 'email', 'openid'],
+    }, (error) => {
+      if (error) {
+        templateInstance.state.set('signUpWithGoogleButton', {
+          ...signUpWithGoogleButton,
+          class: BOX_STATUSES.error,
+          message: error.reason ? error.reason : 'Unexpected error.',
+        });
+      } else {
+        FlowRouter.go('app.home');
+      }
+    });
   },
   'click .sign-in'(event, templateInstance) {
     templateInstance.state.set('signUpWithPassword', false);
@@ -176,5 +193,8 @@ Template.signUp.helpers({
   },
   submitButton() {
     return Template.instance().state.get('submitButton');
+  },
+  signUpWithGoogleButton() {
+    return Template.instance().state.get('signUpWithGoogleButton');
   },
 });
