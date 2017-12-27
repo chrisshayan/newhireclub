@@ -143,7 +143,7 @@ const signUpWithPassword = (event, templateInstance) => {
           message: error.reason ? error.reason : 'Unexpected error.',
         });
       } else {
-        FlowRouter.go('information');
+        FlowRouter.go('info', { message: 'coming-soon' });
       }
     });
   }
@@ -160,7 +160,7 @@ const signUpWithGoolge = (event, templateInstance) => {
         message: error.reason ? error.reason : 'Unexpected error.',
       });
     } else {
-      FlowRouter.go('information');
+      FlowRouter.go('info', { message: 'coming-soon' });
     }
   });
 };

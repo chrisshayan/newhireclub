@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 // import {Accounts} from 'meteor/accounts-base';
@@ -20,6 +21,7 @@ import '../../ui/layouts/not-found';
 // Landing Page
 import '../../ui/pages/landing/landing';
 // Maintenance
+import '../../ui/pages/info/comingSoon';
 // Register
 import '../../ui/pages/signup/signup';
 import '../../ui/pages/signin/signin';
@@ -88,9 +90,11 @@ FlowRouter.route('/signup', {
 //   },
 // });
 
-// Routes for static file
-FlowRouter.route('/:key/', {
+FlowRouter.route('/info/:message', {
+  name: 'info',
   action(params) {
-    if (params.key === 'information') window.location.href = '/information/comingSoon.html';
+    if (params.message === 'coming-soon') {
+      BlazeLayout.render('blankLayout', { content: 'comingSoon' });
+    }
   },
 });
